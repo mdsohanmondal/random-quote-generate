@@ -1,11 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Random quote Generate</title>
-</head>
-<body>
-    
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quote Card</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body
+    class="bg-gradient-to-r from-sky-100 to-indigo-200 min-h-screen flex flex-col gap-5 items-center justify-center p-6"
+  >
+    <div
+      class="bg-white/90 backdrop-blur-md shadow-2xl border border-indigo-200 rounded-3xl p-8 max-w-xl w-full transition-all duration-300"
+    >
+      <div class="flex items-start gap-4">
+        <!-- Left quote icon -->
+        <div class="text-indigo-500">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-10 w-10"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 7h.01M15 7h.01M6 21c0-4 3-7 7-7s7 3 7 7"
+            />
+          </svg>
+        </div>
+
+        <!-- Quote text -->
+        <div>
+          <p
+            id="quote-text"
+            class="text-lg sm:text-xl font-medium text-gray-800 leading-relaxed"
+          ></p>
+
+          <p
+            id="quote-author"
+            class="mt-4 text-right text-sm text-gray-500 font-semibold"
+          ></p>
+        </div>
+      </div>
+    </div>
+    <div>
+      <button
+        id="btn"
+        class="px-4 py-2 bg-blue-400 text-white transition duration-150 ease rounded-full hover:bg-blue-600"
+      >
+        Random Quote
+      </button>
+    </div>
+
+    <script>
+      const btn = document.getElementById('btn');
+      const quoteAuthor = document.getElementById('quote-author');
+      const quoteText = document.getElementById('quote-text');
+
+      let loading = false;
+
+      const generateQuote = async (e) => {
+        const id = Math.floor(Math.random() * 30 + 1);
+        try {
+          loading = true;
+
+          quoteText.textContent = `Loading...`;
+          quoteAuthor.textContent = `Loading...`;
+
+          const response = await fetch(`https://dummyjson.com/quotes/${id}`);
+          const data = await response.json();
+
+          quoteText.textContent = `"${data.quote}"`;
+          quoteAuthor.textContent = `-${data.author}`;
+        } catch (err) {
+          quoteText.textContent = 'Failed to load quote.';
+          quoteAuthor.textContent = '';
+          console.log(err.message);
+        } finally {
+          loading = false;
+        }
+      };
+
+      window.addEventListener('DOMContentLoaded', generateQuote);
+
+      btn.addEventListener('click', generateQuote);
+    </script>
+  </body>
 </html>
